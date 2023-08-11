@@ -17,8 +17,14 @@ type FeedResponse struct {
 func Feed(c *gin.Context) {
 
 	// 返回参数
-	latestTime := c.DefaultQuery("latest_time", strconv.FormatInt(time.Now().Unix(), 10))
-	// token := c.Query("token") // TODO: fix token parameter
+	currentTimeStr := strconv.FormatInt(time.Now().Unix(), 10)
+	latestTime := c.DefaultQuery("latest_time", currentTimeStr)
+	// token := c.Query("token") // TODO token parameter
+
+	// FIXME 在第一次登录抖音时，会发回错误的 latest_time 数值，为了适应这个bug而做的改动
+	if len(latestTime) > 10 {
+		latestTime = currentTimeStr
+	}
 
 	// 参数转换
 	postTime, err := util.ConvertTimestampStrToUnix(latestTime)
