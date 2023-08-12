@@ -9,6 +9,7 @@ func BaseRoutersInit(r *gin.Engine) {
 	baseRouters := r.Group("/douyin")
 	{
 		baseRouters.GET("/feed", controller.Feed)
+		baseRouters.POST("/publish/action/", controller.PublishVideoController)
 	}
 
 }

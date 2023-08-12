@@ -1,6 +1,9 @@
 package util
 
-import "time"
+import (
+	"sync"
+	"time"
+)
 
 type Video struct {
 	Id            int64     `json:"id"`
@@ -18,4 +21,31 @@ type Video struct {
 // TableName 表示配置操作数据库的表名称
 func (Video) TableName() string {
 	return "video"
+}
+
+type VideoDao struct{}
+
+var videoDao *VideoDao
+var videoOnce sync.Once
+
+func NewVideoDaoInstance() *VideoDao {
+	videoOnce.Do(
+		func() {
+			videoDao = &VideoDao{}
+		})
+	return videoDao
+}
+
+func (*VideoDao) CreateVideo(video *Video) error {
+	if err := DB.Create(video).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+func (*VideoDao) QueryVideoCountByUserId(userId int64, count *int64) error {
+	if err := DB.Model(&Video{}).Where("author_id = ?", userId).Count(count).Error; err != nil {
+		return err
+	}
+	return nil
 }

@@ -19,7 +19,10 @@ func init() {
 	dsn := fmt.Sprintf("%s:%d@tcp(%s:%d)/tiktok?charset=utf8mb4&parseTime=True&loc=Local", MYSQL_USERNAME, MYSQL_PASSWORD, MYSQL_HOST, MYSQL_PORT)
 
 	// dsn := "root:1234@tcp(localhost:3306)/tiktok?charset=utf8mb4&parseTime=True&loc=Local"
-	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
+		SkipDefaultTransaction: true,
+		PrepareStmt:            true,
+	})
 	if err != nil {
 		fmt.Println(err)
 	}
