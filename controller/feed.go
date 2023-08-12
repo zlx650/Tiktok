@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
+	"tiktok/service"
 	"tiktok/util"
 	"time"
 )
@@ -29,23 +30,14 @@ func Feed(c *gin.Context) {
 	// 参数转换
 	postTime, err := util.ConvertTimestampStrToUnix(latestTime)
 	if err != nil {
-		return
+		FeedErrorResponse(c, err.Error())
 	}
 
-	// 从数据库中取videoList数据
-	videoList := []util.Video{}
-	util.DB.Preload("Author").Where("post_time < ?", postTime).Order("post_time desc").Limit(30).Find(&videoList)
+	// 调用service层获取videoList
+	videoList := service.QueryFeedVideo(postTime)
 
 	// 选出videoList中最早的post_time
-	var nextTime int64 = time.Now().Unix()
-	if len(videoList) > 0 {
-		for _, video := range videoList {
-			videoTime := video.PostTime.Unix()
-			if videoTime < nextTime {
-				nextTime = video.PostTime.Unix()
-			}
-		}
-	}
+	nextTime := service.FindEarliestPostTime(videoList)
 
 	// 返回数据
 	c.JSON(http.StatusOK, FeedResponse{
@@ -53,4 +45,8 @@ func Feed(c *gin.Context) {
 		VideoList: videoList,
 		NextTime:  nextTime,
 	})
+}
+
+func FeedErrorResponse(context *gin.Context, msg string) {
+	context.JSON(http.StatusOK, Response{StatusCode: 1, StatusMsg: msg})
 }
