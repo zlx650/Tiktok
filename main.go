@@ -1,11 +1,15 @@
 package main
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+	"tiktok/routers"
+)
 
 func main() {
 	r := gin.Default()
 
-  if err := r.Run(); err != nil{
-    return 
-  }
+	routers.BaseRoutersInit(r)
+
+	r.Run()
+
 }
