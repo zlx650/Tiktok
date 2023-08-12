@@ -1,9 +1,13 @@
 package util
 
 import (
+	"fmt"
 	"strconv"
 	"time"
 )
+
+const IP = "127.0.0.1"
+const Port = "8080"
 
 // ConvertTimeToTimestampStr 接收一个time.Time的类型数据，返回string类型、以s为单位的时间戳
 func ConvertTimeToTimestampStr(t time.Time) string {
@@ -18,4 +22,9 @@ func ConvertTimestampStrToUnix(timestampStr string) (time.Time, error) {
 	}
 
 	return t, nil
+}
+
+func GetDataUrl(name string) string {
+	url := fmt.Sprintf("http://%s:%d/static/%s", IP, Port, name)
+	return url
 }
