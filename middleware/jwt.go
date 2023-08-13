@@ -78,7 +78,7 @@ func JWTMiddleWare() gin.HandlerFunc {
 			return
 		}
 		//token超时
-		if !tokenStruck.ExpiresAt.Time.Before(time.Now()) {
+		if tokenStruck.ExpiresAt.Time.Before(time.Now()) {
 			c.JSON(http.StatusOK, controller.Response{
 				StatusCode: 402,
 				StatusMsg:  "token过期",
