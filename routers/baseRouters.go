@@ -9,7 +9,7 @@ import (
 func BaseRoutersInit(r *gin.Engine) {
 	baseRouters := r.Group("/douyin")
 	{
-		baseRouters.GET("/feed", controller.Feed)
+		baseRouters.GET("/feed", middleware.JWTMiddleWare(), controller.Feed)
 		baseRouters.POST("/publish/action/", middleware.JWTMiddleWare(), controller.PublishVideoController)
 	}
 
