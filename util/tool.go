@@ -43,3 +43,8 @@ func GenerateUniqueFileName(userid int64, ext string) string {
 	timestamp := time.Now().Unix() / int64(time.Millisecond)
 	return fmt.Sprintf("%d_%d%s", userid, timestamp, ext)
 }
+
+func GenerateThumbnail(videoPath string, thumbnailPath string) (string, error) {
+	//	todo 生成视频封面
+	return videoPath + thumbnailPath, nil
+}

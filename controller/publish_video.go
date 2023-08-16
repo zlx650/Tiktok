@@ -43,7 +43,7 @@ func PublishVideoController(context *gin.Context) {
 			return
 		}
 		//  todo 加一个视频封面
-		coverName := ""
+		coverName, _ := util.GenerateThumbnail("", "")
 
 		//  数据持久化
 		err = service.PublishVideo(uid, filename, coverName, title)
