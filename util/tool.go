@@ -9,6 +9,11 @@ import (
 const IP = "127.0.0.1"
 const Port = "8080"
 
+var supportedFormats = map[string]struct{}{
+	".mp4": {},
+	//	todo 添加新支持的视频格式 ~
+}
+
 // ConvertTimeToTimestampStr 接收一个time.Time的类型数据，返回string类型、以s为单位的时间戳
 func ConvertTimeToTimestampStr(t time.Time) string {
 	return strconv.FormatInt(t.Unix(), 10)
@@ -27,4 +32,14 @@ func ConvertTimestampStrToUnix(timestampStr string) (time.Time, error) {
 func GetDataUrl(name string) string {
 	url := fmt.Sprintf("http://%s:%d/static/%s", IP, Port, name)
 	return url
+}
+
+func IsSupportedVideoFormat(ext string) bool {
+	_, ok := supportedFormats[ext]
+	return ok
+}
+
+func GenerateUniqueFileName(userid int64, ext string) string {
+	timestamp := time.Now().Unix() / int64(time.Millisecond)
+	return fmt.Sprintf("%d_%d%s", userid, timestamp, ext)
 }
