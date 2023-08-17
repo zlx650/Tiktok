@@ -68,5 +68,5 @@ func PublishVideoControllerErrorResponse(context *gin.Context, msg string) {
 }
 
 func PublishVideoControllerSuccessResponse(context *gin.Context, msg string) {
-	context.JSON(http.StatusOK, Response{StatusCode: 1, StatusMsg: msg})
+	context.JSON(http.StatusOK, Response{StatusCode: 0, StatusMsg: msg})
 }
