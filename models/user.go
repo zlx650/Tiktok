@@ -14,14 +14,9 @@ type User struct {
 	FavoriteCount   uint   `gorm:"default:0;"`
 }
 
-type RegisterForm struct {
-	UserName string `gorm:"varchar(32);unique;not null" json:"username" binding:"required"`
-	Password string `gorm:"varchar(32);not null" json:"password" binding:"required"`
-}
-
-type LoginForm struct {
-	UserName string `gorm:"varchar(32);unique;not null" binding:"required"`
-	Password string `gorm:"varchar(32);not null" binding:"required"`
+// TableName 表示配置操作数据库的表名称
+func (User) TableName() string {
+	return "user"
 }
 
 type UserForm struct {

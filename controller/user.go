@@ -32,14 +32,14 @@ type PublishListResponse struct {
 }
 
 func Register(c *gin.Context) {
-	var req models.RegisterForm
+	var req models.Account
 
 	// 从 URL 查询参数中获取用户名和密码
-	username := c.Query("username")
+	Username := c.Query("Username")
 	password := c.Query("password")
 
 	// 将查询参数绑定到请求结构体
-	req.UserName = username
+	req.Username = Username
 	req.Password = password
 
 	userId, token, err := service.Register(req)
@@ -61,21 +61,21 @@ func Register(c *gin.Context) {
 func Login(c *gin.Context) {
 	log.Println("Login request received")
 
-	u := &models.LoginForm{}
+	u := &models.Account{}
 
 	log.Println("URL:", c.Request.URL.String())
 	log.Println("Params:", c.Request.URL.Query())
 
 	// 从 URL 参数中获取用户名和密码
-	username := c.Query("username")
+	Username := c.Query("Username")
 	password := c.Query("password")
 
 	// 将用户名和密码绑定到登录表单
-	u.UserName = username
+	u.Username = Username
 	u.Password = password
 
 	// 在这里可以进行参数验证逻辑
-	if username == "" || password == "" {
+	if Username == "" || password == "" {
 		c.JSON(http.StatusOK, gin.H{
 			"status_code": 400,
 			"status_msg":  "用户名和密码不能为空",
@@ -83,7 +83,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	user, err := service.Login(u)
+	user, token, err := service.Login(u)
 	if err != nil {
 		log.Println("service.Login failed", err)
 		if err.Error() == dao.ErrorUserNotExit {
@@ -105,7 +105,7 @@ func Login(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"status_code": 0,
 		"user_id":     user.ID,
-		"token":       user.Token,
+		"token":       token,
 		"status_msg":  "登录成功",
 	})
 }
@@ -130,9 +130,9 @@ func UserInfo(c *gin.Context) {
 	}
 
 	// 使用解析后的 claims 数据获取用户信息
-	userInfo, err := service.GetUserInfo(&models.UserForm{
+	userInfo, err := service.GetUserInfo(&models.Account{
 		UserId: claims.UserId, // 使用解析后的用户 ID
-		Token:  token,
+		//Token:  token,
 	})
 	if err != nil {
 		log.Println("获取用户信息失败", err)

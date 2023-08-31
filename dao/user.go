@@ -19,8 +19,8 @@ var (
 )
 
 // 根据用户Id查找用户是否存在
-func FindUserById(user_id int64) (*models.Register, error) {
-	var user *models.Register
+func FindUserById(user_id int64) (*models.User, error) {
+	var user *models.User
 	err := util.DB.Where("user_id = ?", user_id).First(&user).Error
 	if err != nil {
 		log.Println(err.Error())
@@ -29,10 +29,10 @@ func FindUserById(user_id int64) (*models.Register, error) {
 }
 
 // 根据用户名查找用户是否存在
-func FindUserByName(username string) (*models.RegisterForm, error) {
-	var user models.RegisterForm
+func FindUserByName(username string) (*models.Account, error) {
+	var user models.Account
 
-	query := "SELECT * FROM register_forms WHERE username = ?"
+	query := "SELECT * FROM account WHERE username = ?"
 	result := util.DB.Raw(query, username).First(&user)
 
 	if result.Error != nil {
@@ -49,18 +49,19 @@ func FindUserByName(username string) (*models.RegisterForm, error) {
 
 // 添加新用户
 func InsertUser(user *models.User) error {
-	err := util.DB.Create(&user).Error
-	return err
-}
-
-func InsertRegisterForm(user *models.RegisterForm) error {
 	err := util.DB.Create(user).Error
 	return err
 }
 
-func Login(username string) (*models.User, error) {
-	var user models.User
-	result := util.DB.Where(&models.User{Name: username}).Find(&user)
+
+func InsertRegisterForm(user *models.Account) error {
+	err := util.DB.Create(user).Error
+	return err
+}
+
+func Login(username string) (*models.Account, error) {
+	var user models.Account
+	result := util.DB.Where(&models.Account{Username: username}).Find(&user)
 	if result.RowsAffected > 0 {
 		return &user, nil
 	}
