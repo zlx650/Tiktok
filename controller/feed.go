@@ -4,7 +4,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
-  "tiktok/middleware"
+	"tiktok/middleware"
+	"tiktok/models"
 	"tiktok/service"
 	"tiktok/util"
 	"time"
@@ -12,8 +13,8 @@ import (
 
 type FeedResponse struct {
 	Response
-	VideoList []util.Video `json:"video_list,omitempty"`
-	NextTime  int64        `json:"next_time,omitempty"`
+	VideoList []models.Video `json:"video_list,omitempty"`
+	NextTime  int64          `json:"next_time,omitempty"`
 }
 
 func Feed(c *gin.Context) {
@@ -22,7 +23,6 @@ func Feed(c *gin.Context) {
 	currentTimeStr := strconv.FormatInt(time.Now().Unix(), 10)
 	latestTime := c.DefaultQuery("latest_time", currentTimeStr)
 
-  
 	tokenStr := c.Query("token")
 
 	//传入了token

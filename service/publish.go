@@ -1,12 +1,12 @@
 package service
 
 import (
-	"tiktok/dao"
-	"tiktok/util"
 	"log"
+	"tiktok/dao"
+	"tiktok/models"
 )
 
-func GetPublishList(userID int64) ([]util.Video, error) {
+func GetPublishList(userID int64) ([]models.Video, error) {
 	log.Println("service publish sucess")
 	// 获取用户发布的视频列表
 	videoList, err := dao.GetVideosByUserID(userID)

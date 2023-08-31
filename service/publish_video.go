@@ -1,8 +1,9 @@
 package service
 
 import (
+	"tiktok/models"
 	"tiktok/util"
-  "time"
+	"time"
 )
 
 type PublishVideoFlow struct {
@@ -10,8 +11,8 @@ type PublishVideoFlow struct {
 	coverName string
 	title     string
 	authorId  int64
-  PostTime time.Time
-	video *util.Video
+	PostTime  time.Time
+	video     *models.Video
 }
 
 func (f *PublishVideoFlow) Do() error {
@@ -31,14 +32,14 @@ func (f *PublishVideoFlow) checkParam() error {
 }
 
 func (f *PublishVideoFlow) publish() error {
-	video := &util.Video{
-		AuthorId: f.authorId,
+	video := &models.Video{
+		AuthorID: f.authorId,
 		PlayUrl:  f.videoName,
 		CoverUrl: f.coverName,
 		Title:    f.title,
-    PostTime:  time.Now(),
+		PostTime: time.Now(),
 	}
-	return util.NewVideoDaoInstance().CreateVideo(video)
+	return models.NewVideoDaoInstance().CreateVideo(video)
 }
 
 func PublishVideo(userId int64, videoName, coverName, title string) error {
@@ -51,6 +52,5 @@ func NewPublishVideoFlow(userId int64, videoName, coverName, title string) *Publ
 		videoName: videoName,
 		coverName: coverName,
 		title:     title,
-    
 	}
 }

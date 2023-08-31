@@ -1,20 +1,21 @@
-package util
+package models
 
 import (
 	"sync"
+	"tiktok/util"
 	"time"
 )
 
 type Video struct {
-	Id            int64     `json:"id"`
-	AuthorId      int64     `json:"author_id"`
+	ID            int64     `json:"id"`
+	AuthorID      int64     `json:"author_id"`
 	PlayUrl       string    `json:"play_url"`
 	CoverUrl      string    `json:"cover_url"`
 	FavoriteCount int64     `json:"favorite_count"`
 	CommentCount  int64     `json:"comment_count"`
 	IsFavorite    bool      `json:"is_favorite"`
 	Title         string    `json:"title"`
-	Author        Author    `json:"author"`
+	Author        User      `json:"author"`
 	PostTime      time.Time `json:"post_time"`
 }
 
@@ -37,18 +38,15 @@ func NewVideoDaoInstance() *VideoDao {
 }
 
 func (*VideoDao) CreateVideo(video *Video) error {
-	if err := DB.Create(video).Error; err != nil {
+	if err := util.DB.Create(video).Error; err != nil {
 		return err
 	}
 	return nil
 }
 
 func (*VideoDao) QueryVideoCountByUserId(userId int64, count *int64) error {
-	if err := DB.Model(&Video{}).Where("author_id = ?", userId).Count(count).Error; err != nil {
+	if err := util.DB.Model(&Video{}).Where("author_id = ?", userId).Count(count).Error; err != nil {
 		return err
 	}
 	return nil
 }
-
-
-
