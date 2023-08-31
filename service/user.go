@@ -58,6 +58,8 @@ func Login(acc *models.Account) (*models.Account, string, error) {
 		return nil, "", err
 	}
 	// log.Println("这是service里面的user2：",user)
+	
+	// TODO 这里的UserId为空，需要生成
 	token, err := middleware.CreateToken(user.UserId, user.Username, user.Password)
 	if err != nil {
 		return nil, "", err

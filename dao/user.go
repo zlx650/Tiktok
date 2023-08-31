@@ -20,8 +20,9 @@ var (
 
 // 根据用户Id查找用户是否存在
 func FindUserById(user_id int64) (*models.User, error) {
+	
 	var user *models.User
-	err := util.DB.Where("user_id = ?", user_id).First(&user).Error
+	err := util.DB.Where("id = ?", user_id).First(&user).Error
 	if err != nil {
 		log.Println(err.Error())
 	}

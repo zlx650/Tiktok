@@ -35,11 +35,11 @@ func Register(c *gin.Context) {
 	var req models.Account
 
 	// 从 URL 查询参数中获取用户名和密码
-	Username := c.Query("Username")
+	username := c.Query("username")
 	password := c.Query("password")
 
 	// 将查询参数绑定到请求结构体
-	req.Username = Username
+	req.Username = username
 	req.Password = password
 
 	userId, token, err := service.Register(req)
@@ -67,15 +67,15 @@ func Login(c *gin.Context) {
 	log.Println("Params:", c.Request.URL.Query())
 
 	// 从 URL 参数中获取用户名和密码
-	Username := c.Query("Username")
+	username := c.Query("username")
 	password := c.Query("password")
 
 	// 将用户名和密码绑定到登录表单
-	u.Username = Username
+	u.Username = username
 	u.Password = password
 
 	// 在这里可以进行参数验证逻辑
-	if Username == "" || password == "" {
+	if username == "" || password == "" {
 		c.JSON(http.StatusOK, gin.H{
 			"status_code": 400,
 			"status_msg":  "用户名和密码不能为空",
@@ -128,6 +128,7 @@ func UserInfo(c *gin.Context) {
 		})
 		return
 	}
+
 
 	// 使用解析后的 claims 数据获取用户信息
 	userInfo, err := service.GetUserInfo(&models.Account{

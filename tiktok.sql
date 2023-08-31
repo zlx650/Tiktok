@@ -20,7 +20,7 @@ CREATE TABLE `account`  (
 -- ----------------------------
 -- Records of account
 -- ----------------------------
-INSERT INTO `account` VALUES (1, 1, 'admin', 'admin');
+INSERT INTO `account` VALUES (1, 1, 'tiktok', '123456');
 
 -- ----------------------------
 -- Table structure for user

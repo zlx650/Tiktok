@@ -2,7 +2,7 @@ package models
 
 type User struct {
 	ID              int64
-	Name            string `gorm:"column:username;type:varchar(32);unique"`
+	Name            string `gorm:"column:name;type:varchar(32);unique"`
 	FollowCount     uint   `gorm:"default:0;"`
 	FollowerCount   uint   `gorm:"default:0;"`
 	IsFollow        bool   `gorm:"default:false;"`

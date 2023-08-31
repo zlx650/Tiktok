@@ -3,7 +3,7 @@ package models
 type Account struct {
 	ID       int64
 	UserId   int64
-	Username string `gorm:"varchar(32);unique;not null" binding:"required"`
+	Username string `gorm:"column:username;varchar(32);unique;not null" binding:"required"`
 	Password string `gorm:"varchar(32);not null" binding:"required"`
 }
 
