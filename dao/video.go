@@ -60,7 +60,14 @@ func UpdateVideoURL() error {
 
 func UpdateVideoIsFavoriteByVideoID(videoId, actionType string) error {
 
-	if err := DB.Model(&models.Video{}).Where("video_id = ?", videoId).Update("is_favorite", actionType).Error; err != nil {
+	var action int8
+	if actionType == "1" {
+		action = 1
+	} else {
+		action = 0
+	}
+
+	if err := DB.Model(&models.Video{}).Where("id = ?", videoId).Update("is_favorite", action).Error; err != nil {
 		return err
 	}
 

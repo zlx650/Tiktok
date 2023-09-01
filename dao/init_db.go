@@ -10,7 +10,7 @@ import (
 var DB *gorm.DB
 var err error
 
-func init() {
+func Init() error {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/tiktok?charset=utf8mb4&parseTime=True&loc=Local", config.MYSQL_USERNAME, config.MYSQL_PASSWORD, config.MYSQL_HOST, config.MYSQL_PORT)
 
 	// dsn := "root:1234@tcp(localhost:3306)/tiktok?charset=utf8mb4&parseTime=True&loc=Local"
@@ -24,6 +24,8 @@ func init() {
 	err = UpdateVideoURL()
 
 	if err != nil {
-		fmt.Println(err)
+		return err
 	}
+
+	return nil
 }

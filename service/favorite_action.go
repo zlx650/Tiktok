@@ -1,6 +1,7 @@
 package service
 
 import (
+	"errors"
 	"fmt"
 	"tiktok/dao"
 )
@@ -19,6 +20,6 @@ func FavoriteAction(videoId, actionType string) error {
 		}
 	}
 
-	return nil
+	return errors.New("UnknownError")
 
 }

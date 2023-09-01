@@ -10,7 +10,7 @@ func InteractRoutersInit(r *gin.Engine) {
 
 	interactRouters := r.Group("douyin")
 	{
-		interactRouters.POST("/favorite/action", middleware.JWTMiddleWare(), controller.FavoriteAction)
+		interactRouters.POST("/favorite/action/", middleware.JWTMiddleWare(), controller.FavoriteAction)
 	}
 
 }

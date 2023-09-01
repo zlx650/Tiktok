@@ -2,6 +2,7 @@ package controller
 
 import (
 	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
 	"tiktok/service"
 )
@@ -20,6 +21,7 @@ func FavoriteAction(c *gin.Context) {
 
 	err := service.FavoriteAction(videoId, actionType)
 	if err != nil {
+		log.Println("controller: " + err.Error())
 		FavoriteActionErrorResponse(c, action+"失败")
 		c.Abort()
 		return

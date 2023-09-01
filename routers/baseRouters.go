@@ -2,7 +2,6 @@ package routers
 
 import (
 	"github.com/gin-gonic/gin"
-	"net/http"
 	"tiktok/controller"
 	"tiktok/middleware"
 )
@@ -10,11 +9,6 @@ import (
 func BaseRoutersInit(r *gin.Engine) {
 
 	r.Static("static", "./static")
-	r.GET("/ping/", func(context *gin.Context) {
-		context.JSON(http.StatusOK, gin.H{
-			"ping": "success",
-		})
-	})
 
 	baseRouters := r.Group("/douyin")
 	{
