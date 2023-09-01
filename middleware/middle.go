@@ -1,24 +1,17 @@
-package authmiddleware
-
-
+package middleware
 
 import (
-
 	"net/http"
+	"tiktok/util"
 
 	"tiktok/controller"
 
-	"tiktok/middleware"
-
 	"time"
 
-  "log"
+	"log"
 
 	"github.com/gin-gonic/gin"
-
 )
-
-
 
 func JWTMiddleWare() gin.HandlerFunc {
 
@@ -46,17 +39,16 @@ func JWTMiddleWare() gin.HandlerFunc {
 
 		//验证token
 
-		tokenStruck, err := middleware.ParseToken(tokenStr)
+		tokenStruck, err := util.ParseToken(tokenStr)
 
 		if err != nil {
-       log.Println("Token 解析错误:", err)
+			log.Println("Token 解析错误:", err)
 
 			c.JSON(http.StatusOK, controller.Response{
 
 				StatusCode: 403,
 
-				StatusMsg:  "token不正确",
-
+				StatusMsg: "token不正确",
 			})
 
 			c.Abort() //阻止执行
@@ -64,7 +56,7 @@ func JWTMiddleWare() gin.HandlerFunc {
 			return
 
 		}
-    // log.Println("解析后的 Token:", tokenStruck)
+		// log.Println("解析后的 Token:", tokenStruck)
 
 		//token超时
 
@@ -74,8 +66,7 @@ func JWTMiddleWare() gin.HandlerFunc {
 
 				StatusCode: 402,
 
-				StatusMsg:  "token过期",
-
+				StatusMsg: "token过期",
 			})
 
 			c.Abort() //阻止执行
@@ -91,4 +82,3 @@ func JWTMiddleWare() gin.HandlerFunc {
 	}
 
 }
-

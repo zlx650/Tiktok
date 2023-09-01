@@ -9,12 +9,9 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"tiktok/config"
 	"time"
 )
-
-// var IP = "https://4b866bc09c8ece71b8354b53bae25b8f-app.1024paas.com"
-// var Port = os.Getenv("MYSQL_PORT")
-var IP = "https://" + os.Getenv("paas_url")
 
 var supportedFormats = map[string]struct{}{
 	".mp4": {},
@@ -38,7 +35,7 @@ func ConvertTimestampStrToUnix(timestampStr string) (time.Time, error) {
 
 // GetDataUrl 通过文件名获取对应url
 func GetDataUrl(name string) string {
-	url := fmt.Sprintf("%s/static/%s", IP, name)
+	url := fmt.Sprintf("%s/static/%s", config.IP, name)
 	return url
 }
 
@@ -50,7 +47,7 @@ func IsSupportedVideoFormat(ext string) bool {
 
 // GenerateUniqueFileName 通过用户名生成唯一的文件名 userid + timestamp
 func GenerateUniqueFileName(userid int64) string {
-	
+
 	return fmt.Sprintf("%d_%d", userid, time.Now().Unix())
 }
 

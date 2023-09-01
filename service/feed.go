@@ -1,25 +1,11 @@
 package service
 
 import (
-	"tiktok/util"
+	"tiktok/models"
 	"time"
 )
 
-func QueryFeedVideo(postTime time.Time) []util.Video {
-
-	// 从数据库中取videoList数据
-	var videoList []util.Video
-
-	util.DB.Preload("Author").
-		Where("post_time < ?", postTime).
-		Order("post_time desc").
-		Limit(30).
-		Find(&videoList)
-
-	return videoList
-}
-
-func FindEarliestPostTime(videoList []util.Video) int64 {
+func FindEarliestPostTime(videoList []models.Video) int64 {
 	var nextTime int64 = time.Now().Unix()
 	if len(videoList) > 0 {
 		for _, video := range videoList {
