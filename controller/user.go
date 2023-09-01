@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
+	"strconv"
 	"tiktok/models"
 	"tiktok/service"
 	"tiktok/util"
@@ -141,6 +142,9 @@ func UserInfo(c *gin.Context) {
 func GetPublishList(c *gin.Context) {
 	// 从 URL 查询参数中获取 token
 	token := c.Query("token")
+	userId := c.Query("user_id")
+
+	/**
 
 	// 从本地存储中获取 user_id
 	userID, ok := c.Get("user_id")
@@ -163,6 +167,11 @@ func GetPublishList(c *gin.Context) {
 		return
 	}
 	log.Println("获取发布列表")
+
+	*/
+
+	userIDInt64, _ := strconv.ParseInt(userId, 10, 64)
+
 	// 调用 service 获取用户发布列表
 	videoList, err := service.GetPublishList(userIDInt64)
 	if err != nil {

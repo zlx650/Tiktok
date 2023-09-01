@@ -46,9 +46,9 @@ func Register(req models.Account) (int64, string, error) {
 		Avatar:          "https://www.helloimg.com/images/2023/08/25/oiG7nT.jpg",
 		BackgroundImage: "https://www.helloimg.com/images/2023/08/25/oiGQUq.png",
 		Signature:       "这家伙很懒，什么也没写",
-		TotalFavorited:  "1",
-		WorkCount:       2,
-		FavoriteCount:   3,
+		TotalFavorited:  "100",
+		WorkCount:       0,
+		FavoriteCount:   0,
 	}
 	userId, err := dao.InsertUser(u)
 	if err != nil {
