@@ -44,7 +44,7 @@ func Register(c *gin.Context) {
 	userId, token, err := service.Register(req)
 	if err != nil {
 		c.JSON(http.StatusOK, UserLoginResponse{
-			Response: Response{StatusCode: 2, StatusMsg: "注册失败"},
+			Response: Response{StatusCode: 2, StatusMsg: err.Error()},
 		})
 		return
 	}

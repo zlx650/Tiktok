@@ -12,7 +12,7 @@ import (
 )
 
 var (
-	ErrorUserExit      = "用户已存在"
+	ErrorUserExit      = errors.New("用户已存在")
 	ErrorUserNotExit   = "用户不存在"
 	ErrorPasswordWrong = "密码错误"
 	ErrorGenIDFailed   = errors.New("创建用户ID失败")
@@ -31,14 +31,24 @@ func Register(req models.Account) (int64, string, error) {
 
 	// 首先检查用户是否已存在
 	if isExistByName {
-		return 0, "", errors.New("用户已存在")
+		return 0, "", ErrorUserExit
 	}
 
 	// 用户不存在,进行注册
 
 	// 插入User表
 	u := models.User{
-		Name: req.Username,
+		ID:              0,
+		Name:            req.Username,
+		FollowCount:     0,
+		FollowerCount:   0,
+		IsFollow:        false,
+		Avatar:          "https://www.helloimg.com/images/2023/08/25/oiG7nT.jpg",
+		BackgroundImage: "https://www.helloimg.com/images/2023/08/25/oiGQUq.png",
+		Signature:       "这家伙很懒，什么也没写",
+		TotalFavorited:  "1",
+		WorkCount:       2,
+		FavoriteCount:   3,
 	}
 	userId, err := dao.InsertUser(u)
 	if err != nil {
