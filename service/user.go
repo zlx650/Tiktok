@@ -24,51 +24,49 @@ var (
 func Register(req models.Account) (int64, string, error) {
 	log.Println("调用了 service.register")
 
-	// 首先检查用户是否已存在
-	existingUser, err := dao.FindUserByName(req.Username)
-	// log.Println("打印一下这个错误",err)
+	isExistByName, err := dao.QueryUserIsExistByName(req.Username)
+	if err != nil {
+		return 0, "", err
+	}
 
-	if existingUser != nil {
+	// 首先检查用户是否已存在
+	if isExistByName {
 		return 0, "", errors.New("用户已存在")
 	}
 
-	// 用户不存在，进行注册
+	// 用户不存在,进行注册
+
+	// 插入User表
 	u := models.User{
 		Name: req.Username,
 	}
-	// 插入User表
-	err = dao.InsertUser(&u)
+	userId, err := dao.InsertUser(u)
 	if err != nil {
-		return 0, "", errors.New("创建失败")
+		return 0, "", err
 	}
 
 	// 插入Account表
-	eu, _ := dao.FindUserByName(u.Name)
-	acc := models.Account{
-		UserId:   eu.UserId,
-		Username: eu.Username,
-		Password: req.Password,
-	}
-	err = dao.InsertAccount(&acc)
+	req.UserId = userId
+	err = dao.InsertAccount(req)
 	if err != nil {
-		return 0, "", errors.New("创建失败")
+		return 0, "", err
 	}
 
 	// 生成 token
-	token, err := util.CreateToken(acc.UserId, acc.Username, acc.Password)
+	token, err := util.CreateToken(req.UserId, req.Username, req.Password)
 	if err != nil {
 		return 0, "", err
 	}
 
 	// log.Println("调用了 service.register，成功返回用户 ID 和 token")
 	// 在注册成功后，返回用户 ID 和 token
-	return acc.ID, token, nil
+	return req.ID, token, nil
 }
 
 func Login(acc *models.Account) (*models.Account, string, error) {
 	// 进行用户名密码验证
 	dbuser, err := dao.Login(acc.Username)
-	if dbuser.UserId == 0 {
+	if err != nil || dbuser.UserId == 0 {
 		return nil, "", err
 	}
 

@@ -28,6 +28,23 @@ func FindUserById(user_id int64) (*models.User, error) {
 	return user, err
 }
 
+func QueryUserIsExistByName(username string) (bool, error) {
+	var user models.Account
+
+	if err := DB.Where("username = ?", username).First(&user).Error; err != nil {
+		return false, err
+	}
+
+	// user存在
+	if user.ID != 0 {
+		return true, nil
+	}
+
+	// user不存在
+	return false, nil
+
+}
+
 // 根据用户名查找用户是否存在
 func FindUserByName(username string) (*models.Account, error) {
 	var user models.Account
@@ -48,13 +65,15 @@ func FindUserByName(username string) (*models.Account, error) {
 }
 
 // 添加新用户
-func InsertUser(user *models.User) error {
-	err := DB.Create(user).Error
-	return err
+func InsertUser(user models.User) (int64, error) {
+	if err := DB.Create(&user).Error; err != nil {
+		return 0, err
+	}
+	return user.ID, nil
 }
 
-func InsertAccount(user *models.Account) error {
-	err := DB.Create(user).Error
+func InsertAccount(user models.Account) error {
+	err := DB.Create(&user).Error
 	return err
 }
 
