@@ -14,7 +14,7 @@ import (
 var (
 	ErrorUserExit      = errors.New("用户已存在")
 	ErrorUserNotExit   = "用户不存在"
-	ErrorPasswordWrong = "密码错误"
+	ErrorPasswordWrong = errors.New("密码错误")
 	ErrorGenIDFailed   = errors.New("创建用户ID失败")
 	ErrorInvalidID     = "无效的ID"
 	ErrorQueryFailed   = "查询数据失败"
@@ -110,7 +110,7 @@ func LoginValidation(acc *models.Account) (*models.Account, error) {
 
 	// 判断账号密码是否正确
 	if acc.Password != dbuser.Password {
-		return nil, errors.New(ErrorPasswordWrong)
+		return nil, ErrorPasswordWrong
 	}
 
 	return dbuser, nil

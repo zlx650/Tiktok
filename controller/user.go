@@ -85,7 +85,7 @@ func Login(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"status_code": 1,
-			"status_msg":  "登录错误",
+			"status_msg":  err.Error(),
 		})
 		return
 	}
