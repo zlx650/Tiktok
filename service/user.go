@@ -3,10 +3,21 @@ package service
 import (
 	"errors"
 	"log"
+	"os/user"
 	"tiktok/dao"
 	"tiktok/middleware"
 	"tiktok/models"
 	// "gorm.io/gorm"
+)
+
+var (
+	ErrorUserExit      = "用户已存在"
+	ErrorUserNotExit   = "用户不存在"
+	ErrorPasswordWrong = "密码错误"
+	ErrorGenIDFailed   = errors.New("创建用户ID失败")
+	ErrorInvalidID     = "无效的ID"
+	ErrorQueryFailed   = "查询数据失败"
+	ErrorInsertFailed  = errors.New("插入数据失败")
 )
 
 func Register(req models.Account) (int64, string, error) {
@@ -19,29 +30,33 @@ func Register(req models.Account) (int64, string, error) {
 	if existingUser != nil {
 		return 0, "", errors.New("用户已存在")
 	}
-	log.Println("111")
-	// 用户不存在，进行注册
-	acc := models.Account{
-		Username: req.Username,
-		Password: req.Password,
-	}
 
-	err = dao.InsertRegisterForm(&acc)
+	
+	// 用户不存在，进行注册
+	u := models.User{
+			Name: req.Username,
+	}
+	// 插入User表
+	err = dao.InsertUser(&u)
 	if err != nil {
 		return 0, "", errors.New("创建失败")
-	} else {
-		u := models.User{
-			Name: req.Username,
-		}
-		errs := dao.InsertUser(&u)
-		if errs != nil {
-			return 0, "", errors.New("创建失败")
-		}
+	}
+	
+	// 插入Account表
+	eu, _ := dao.FindUserByName(u.Name)
+	acc := models.Account{
+		UserId: eu.UserId,
+		Username: eu.Username,
+		Password: req.Password,
+	}
+	err = dao.InsertAccount(&acc)
+	if err != nil {
+		return 0, "", errors.New("创建失败")
 	}
 
 	
 	// 生成 token
-	token, err := middleware.CreateToken(acc.ID,acc.Username, acc.Password)
+	token, err := middleware.CreateToken(acc.UserId,acc.Username, acc.Password)
 	if err != nil {
 		return 0, "", err
 	}
@@ -53,19 +68,28 @@ func Register(req models.Account) (int64, string, error) {
 
 func Login(acc *models.Account) (*models.Account, string, error) {
 	// 进行用户名密码验证
-	user, err := dao.Login(acc.Username)
+	dbuser, err := dao.Login(acc.Username)
+	if dbuser.UserId == 0 {
+		return nil, "", err;
+	}
+	
+	if (dbuser.Password != acc.Password) {
+		return nil, "", errors.New(ErrorPasswordWrong);
+	}
+
 	if err != nil {
 		return nil, "", err
 	}
 	// log.Println("这是service里面的user2：",user)
+
 	
 	// TODO 这里的UserId为空，需要生成
-	token, err := middleware.CreateToken(user.UserId, user.Username, user.Password)
+	token, err := middleware.CreateToken(dbuser.UserId, dbuser.Username, dbuser.Password)
 	if err != nil {
 		return nil, "", err
 	}
 
-	return user, token, nil
+	return dbuser, token, nil
 }
 
 func GetUserInfo(acc *models.Account) (*models.User, error) {

@@ -55,7 +55,7 @@ func InsertUser(user *models.User) error {
 }
 
 
-func InsertRegisterForm(user *models.Account) error {
+func InsertAccount(user *models.Account) error {
 	err := util.DB.Create(user).Error
 	return err
 }
