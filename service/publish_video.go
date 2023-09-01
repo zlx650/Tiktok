@@ -1,6 +1,7 @@
 package service
 
 import (
+	"tiktok/dao"
 	"tiktok/models"
 	"tiktok/util"
 	"time"
@@ -39,7 +40,7 @@ func (f *PublishVideoFlow) publish() error {
 		Title:    f.title,
 		PostTime: time.Now(),
 	}
-	return models.NewVideoDaoInstance().CreateVideo(video)
+	return dao.NewVideoDaoInstance().CreateVideo(video)
 }
 
 func PublishVideo(userId int64, videoName, coverName, title string) error {

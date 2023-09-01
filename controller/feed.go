@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
-	"tiktok/middleware"
+	"tiktok/dao"
 	"tiktok/models"
 	"tiktok/service"
 	"tiktok/util"
@@ -27,7 +27,7 @@ func Feed(c *gin.Context) {
 
 	//传入了token
 	if tokenStr != "" {
-		tokenStruck, err := middleware.ParseToken(tokenStr)
+		tokenStruck, err := util.ParseToken(tokenStr)
 		if err != nil {
 			c.JSON(http.StatusOK, Response{
 				StatusCode: 403,
@@ -60,7 +60,10 @@ func Feed(c *gin.Context) {
 	}
 
 	// 调用service层获取videoList
-	videoList := service.QueryFeedVideo(postTime)
+	videoList, err := dao.QueryFeedVideoList(postTime)
+	if err != nil {
+		FeedErrorResponse(c, err.Error())
+	}
 
 	// 选出videoList中最早的post_time
 	nextTime := service.FindEarliestPostTime(videoList)

@@ -5,9 +5,9 @@ import (
 	"log"
 	"net/http"
 	"tiktok/dao"
-	"tiktok/middleware"
 	"tiktok/models"
 	"tiktok/service"
+	"tiktok/util"
 )
 
 var userIdSequence = int64(1)
@@ -120,7 +120,7 @@ func UserInfo(c *gin.Context) {
 	token := c.Query("token")
 
 	// 验证 token
-	claims, err := middleware.ParseToken(token)
+	claims, err := util.ParseToken(token)
 	if err != nil {
 		log.Println("Token 验证失败", err)
 		c.JSON(http.StatusOK, UserResponse{
@@ -128,7 +128,6 @@ func UserInfo(c *gin.Context) {
 		})
 		return
 	}
-
 
 	// 使用解析后的 claims 数据获取用户信息
 	userInfo, err := service.GetUserInfo(&models.Account{

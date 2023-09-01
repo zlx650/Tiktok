@@ -5,7 +5,6 @@ import (
 	"gorm.io/gorm"
 	"log"
 	"tiktok/models"
-	"tiktok/util"
 )
 
 var (
@@ -20,9 +19,9 @@ var (
 
 // 根据用户Id查找用户是否存在
 func FindUserById(user_id int64) (*models.User, error) {
-	
+
 	var user *models.User
-	err := util.DB.Where("id = ?", user_id).First(&user).Error
+	err := DB.Where("id = ?", user_id).First(&user).Error
 	if err != nil {
 		log.Println(err.Error())
 	}
@@ -34,7 +33,7 @@ func FindUserByName(username string) (*models.Account, error) {
 	var user models.Account
 
 	query := "SELECT * FROM account WHERE username = ?"
-	result := util.DB.Raw(query, username).First(&user)
+	result := DB.Raw(query, username).First(&user)
 
 	if result.Error != nil {
 		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
@@ -50,19 +49,18 @@ func FindUserByName(username string) (*models.Account, error) {
 
 // 添加新用户
 func InsertUser(user *models.User) error {
-	err := util.DB.Create(user).Error
+	err := DB.Create(user).Error
 	return err
 }
 
-
 func InsertAccount(user *models.Account) error {
-	err := util.DB.Create(user).Error
+	err := DB.Create(user).Error
 	return err
 }
 
 func Login(username string) (*models.Account, error) {
 	var user models.Account
-	result := util.DB.Where(&models.Account{Username: username}).Find(&user)
+	result := DB.Where(&models.Account{Username: username}).Find(&user)
 	if result.RowsAffected > 0 {
 		return &user, nil
 	}

@@ -3,9 +3,10 @@ package service
 import (
 	"errors"
 	"log"
+	"tiktok/util"
+
 	// "os/user"
 	"tiktok/dao"
-	"tiktok/middleware"
 	"tiktok/models"
 	// "gorm.io/gorm"
 )
@@ -31,21 +32,20 @@ func Register(req models.Account) (int64, string, error) {
 		return 0, "", errors.New("用户已存在")
 	}
 
-	
 	// 用户不存在，进行注册
 	u := models.User{
-			Name: req.Username,
+		Name: req.Username,
 	}
 	// 插入User表
 	err = dao.InsertUser(&u)
 	if err != nil {
 		return 0, "", errors.New("创建失败")
 	}
-	
+
 	// 插入Account表
 	eu, _ := dao.FindUserByName(u.Name)
 	acc := models.Account{
-		UserId: eu.UserId,
+		UserId:   eu.UserId,
 		Username: eu.Username,
 		Password: req.Password,
 	}
@@ -54,9 +54,8 @@ func Register(req models.Account) (int64, string, error) {
 		return 0, "", errors.New("创建失败")
 	}
 
-	
 	// 生成 token
-	token, err := middleware.CreateToken(acc.UserId,acc.Username, acc.Password)
+	token, err := util.CreateToken(acc.UserId, acc.Username, acc.Password)
 	if err != nil {
 		return 0, "", err
 	}
@@ -70,11 +69,11 @@ func Login(acc *models.Account) (*models.Account, string, error) {
 	// 进行用户名密码验证
 	dbuser, err := dao.Login(acc.Username)
 	if dbuser.UserId == 0 {
-		return nil, "", err;
+		return nil, "", err
 	}
-	
-	if (dbuser.Password != acc.Password) {
-		return nil, "", errors.New(ErrorPasswordWrong);
+
+	if dbuser.Password != acc.Password {
+		return nil, "", errors.New(ErrorPasswordWrong)
 	}
 
 	if err != nil {
@@ -82,9 +81,8 @@ func Login(acc *models.Account) (*models.Account, string, error) {
 	}
 	// log.Println("这是service里面的user2：",user)
 
-	
 	// TODO 这里的UserId为空，需要生成
-	token, err := middleware.CreateToken(dbuser.UserId, dbuser.Username, dbuser.Password)
+	token, err := util.CreateToken(dbuser.UserId, dbuser.Username, dbuser.Password)
 	if err != nil {
 		return nil, "", err
 	}
