@@ -2,10 +2,11 @@ package util
 
 import (
 	"fmt"
+	"tiktok/service"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-  "os"
+	"os"
 )
 
 var DB *gorm.DB
@@ -23,8 +24,8 @@ var MYSQL_PORT = os.Getenv("MYSQL_PORT")
 // var MYSQL_PORT = "50333"
 
 func init() {
-  	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/tiktok?charset=utf8mb4&parseTime=True&loc=Local", MYSQL_USERNAME, MYSQL_PASSWORD, MYSQL_HOST, MYSQL_PORT)
-  
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/tiktok?charset=utf8mb4&parseTime=True&loc=Local", MYSQL_USERNAME, MYSQL_PASSWORD, MYSQL_HOST, MYSQL_PORT)
+
 	// dsn := "root:1234@tcp(localhost:3306)/tiktok?charset=utf8mb4&parseTime=True&loc=Local"
 	// fmt.Println(dsn)
 	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
@@ -32,7 +33,9 @@ func init() {
 		PrepareStmt:            true,
 	})
 
-	
+	// 更新数据库中videoURL数据
+	err = service.UpdateVideoURL()
+
 	if err != nil {
 		fmt.Println(err)
 	}

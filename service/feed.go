@@ -1,6 +1,7 @@
 package service
 
 import (
+	"gorm.io/gorm"
 	"tiktok/models"
 	"tiktok/util"
 	"time"
@@ -31,4 +32,17 @@ func FindEarliestPostTime(videoList []models.Video) int64 {
 		}
 	}
 	return nextTime
+}
+
+func UpdateVideoURL() error {
+
+	newUrl := util.IP
+
+	if err := util.DB.Model(&models.Video{}).
+		Where("play_url LIKE ?", "%static%").
+		Update("play_url", gorm.Expr("REGEXP_REPLACE(play_url, ?, ?)", "^https:.*\\.com", newUrl)).Error; err != nil {
+		return err
+	}
+
+	return nil
 }

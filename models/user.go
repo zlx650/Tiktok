@@ -1,7 +1,7 @@
 package models
 
 type User struct {
-	ID              int64	 `json:"id"`
+	ID              int64  `json:"id"`
 	Name            string `json:"name" gorm:"column:name;type:varchar(32);unique"`
 	FollowCount     uint   `json:"follow_count" gorm:"default:0;"`
 	FollowerCount   uint   `json:"follower_count" gorm:"default:0;"`
