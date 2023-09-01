@@ -13,7 +13,7 @@ var err error
 
 // 1024code 中从环境变量获取值
 var MYSQL_USERNAME = os.Getenv("MYSQL_USER")
-var MYSQL_PASSWORD = "PXMPVWkv"
+var MYSQL_PASSWORD = "JAAquZNn"
 var MYSQL_HOST = os.Getenv("MYSQL_HOST")
 var MYSQL_PORT = os.Getenv("MYSQL_PORT")
 

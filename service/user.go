@@ -3,7 +3,7 @@ package service
 import (
 	"errors"
 	"log"
-	"os/user"
+	// "os/user"
 	"tiktok/dao"
 	"tiktok/middleware"
 	"tiktok/models"
