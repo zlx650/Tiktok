@@ -4,7 +4,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
-	"tiktok/dao"
 	"tiktok/models"
 	"tiktok/service"
 	"tiktok/util"
@@ -14,7 +13,7 @@ var userIdSequence = int64(1)
 
 type UserLoginResponse struct {
 	Response
-	UserId int64  `json:"user_id,omitempty"`
+	UserId int64  `json:"user_id"`
 	Token  string `json:"token"`
 }
 
@@ -44,9 +43,8 @@ func Register(c *gin.Context) {
 
 	userId, token, err := service.Register(req)
 	if err != nil {
-		log.Println("注册失败", err)
 		c.JSON(http.StatusOK, UserLoginResponse{
-			Response: Response{StatusCode: 2, StatusMsg: "用户已存在"},
+			Response: Response{StatusCode: 2, StatusMsg: "注册失败"},
 		})
 		return
 	}
@@ -85,17 +83,9 @@ func Login(c *gin.Context) {
 
 	user, token, err := service.Login(u)
 	if err != nil {
-		log.Println("service.Login failed", err)
-		if err.Error() == dao.ErrorUserNotExit {
-			c.JSON(http.StatusOK, gin.H{
-				"status_code": 3,
-				"status_msg":  "用户不存在",
-			})
-			return
-		}
 		c.JSON(http.StatusOK, gin.H{
 			"status_code": 1,
-			"status_msg":  "请求参数错误",
+			"status_msg":  "登录错误",
 		})
 		return
 	}
@@ -104,7 +94,7 @@ func Login(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"status_code": 0,
-		"user_id":     user.ID,
+		"user_id":     user.UserId,
 		"token":       token,
 		"status_msg":  "登录成功",
 	})

@@ -9,7 +9,7 @@ import (
 
 var (
 	ErrorUserExit      = "用户已存在"
-	ErrorUserNotExit   = "用户不存在"
+	ErrorUserNotExit   = errors.New("用户不存在")
 	ErrorPasswordWrong = "密码错误"
 	ErrorGenIDFailed   = errors.New("创建用户ID失败")
 	ErrorInvalidID     = "无效的ID"
@@ -28,33 +28,16 @@ func FindUserById(user_id int64) (*models.User, error) {
 	return user, err
 }
 
-// 根据用户名查找用户是否存在
-func FindUserByName(username string) (*models.Account, error) {
-	var user models.Account
-
-	query := "SELECT * FROM account WHERE username = ?"
-	result := DB.Raw(query, username).First(&user)
-
-	if result.Error != nil {
-		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-			log.Println("User not found:", username)
-			return nil, errors.New(ErrorUserNotExit)
-		}
-		log.Println("Error querying database:", result.Error)
-		return nil, result.Error
-	}
-
-	return &user, nil
-}
-
 // 添加新用户
-func InsertUser(user *models.User) error {
-	err := DB.Create(user).Error
-	return err
+func InsertUser(user models.User) (int64, error) {
+	if err := DB.Create(&user).Error; err != nil {
+		return 0, err
+	}
+	return user.ID, nil
 }
 
-func InsertAccount(user *models.Account) error {
-	err := DB.Create(user).Error
+func InsertAccount(user models.Account) error {
+	err := DB.Create(&user).Error
 	return err
 }
 
@@ -64,5 +47,48 @@ func Login(username string) (*models.Account, error) {
 	if result.RowsAffected > 0 {
 		return &user, nil
 	}
-	return nil, errors.New(ErrorUserNotExit)
+	return nil, ErrorUserNotExit
+}
+
+func QueryAccountIsExistByName(username string) (bool, error) {
+	var user models.Account
+
+	DB.Where("username = ?", username).First(&user)
+
+	// user存在
+	if user.ID != 0 {
+		return true, nil
+	}
+
+	// user不存在
+	return false, nil
+
+}
+
+func QueryAccountByName(username string) (*models.Account, error) {
+	var user models.Account
+
+	result := DB.Where("username = ?", username).First(&user)
+	if result.Error == nil {
+		// 查询成功
+		return &user, nil
+	} else if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		//记录不存在
+		return nil, ErrorUserNotExit
+	} else {
+		// 未知错误
+		return nil, errors.New(result.Error.Error())
+	}
+
+}
+
+func QueryAccountPasswordByName(username string) (string, error) {
+	var user models.Account
+
+	err := DB.Where("username = ?", username).First(&user).Error
+	if err != nil {
+		return "", err
+	}
+
+	return user.Password, nil
 }
